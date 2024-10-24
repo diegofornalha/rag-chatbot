@@ -23,7 +23,7 @@ export async function POST(request: Request) {
       "Content-Type": "application/json",
       Authorization: "Bearer " + process.env.RAGIE_API_KEY,
     },
-    body: JSON.stringify({ rerank: true, top_k: 32, query }),
+    body: JSON.stringify({ rerank: false, top_k: 8, query }),
   });
 
   if (!ragie_response.ok) {
@@ -44,7 +44,6 @@ export async function POST(request: Request) {
 
     Your current task is to help the user based on all of the information available to you shown below.
     Answer informally, directly, and concisely without a heading or greeting but include everything relevant. 
-    Your answers should be short, clear, and concise.
     Use richtext Markdown when appropriate including bold, italic, paragraphs, and lists when helpful.
     If using LaTeX, use double $$ as delimiter instead of single $. Use $$...$$ instead of parentheses.
     Organize information into multiple sections or points when appropriate.
