@@ -1,10 +1,11 @@
-<a href="https://chat.vercel.ai/">
-  <img alt="Next.js 14 and App Router-ready AI chatbot." src="app/(chat)/opengraph-image.png">
-  <h1 align="center">Next.js AI Chatbot</h1>
+<a href="https://ragie.vercel.app/">
+  <img alt="RAG Chatbot" src="https://github.com/user-attachments/assets/aff4ec02-882f-4f21-b8d3-a02b1d4d298b">
+  <h1 align="center">RAG Chatbot</h1>
 </a>
 
+
 <p align="center">
-  An Open-Source AI Chatbot Template Built With Next.js and the AI SDK by Vercel.
+  An Open-Source RAG Chatbot Template Built With Ragie, Next.js, and the AI SDK by Vercel.
 </p>
 
 <p align="center">
@@ -16,7 +17,8 @@
 <br/>
 
 ## Features
-
+- [Ragie.ai](https://ragie.ai/?utm_source=rag-chatbot)
+  - Fully Managed RAG-as-a-service Platform for Developers 
 - [Next.js](https://nextjs.org) App Router
   - Advanced routing for seamless navigation and performance
   - React Server Components (RSCs) and Server Actions for server-side rendering and increased performance
@@ -35,13 +37,13 @@
 
 ## Model Providers
 
-This template ships with OpenAI `gpt-4o` as the default. However, with the [AI SDK](https://sdk.vercel.ai/docs), you can switch LLM providers to [OpenAI](https://openai.com), [Anthropic](https://anthropic.com), [Cohere](https://cohere.com/), and [many more](https://sdk.vercel.ai/providers/ai-sdk-providers) with just a few lines of code.
+This template ships with Meta `llama-3.1-70b-versatile` as the default. However, with the [AI SDK](https://sdk.vercel.ai/docs), you can switch LLM providers to [OpenAI](https://openai.com), [Anthropic](https://anthropic.com), [Cohere](https://cohere.com/), and [many more](https://sdk.vercel.ai/providers/ai-sdk-providers) with just a few lines of code.
 
 ## Deploy Your Own
 
 You can deploy your own version of the Next.js AI Chatbot to Vercel with one click:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fai-chatbot&env=AUTH_SECRET,OPENAI_API_KEY&envDescription=Learn%20more%20about%20how%20to%20get%20the%20API%20Keys%20for%20the%20application&envLink=https%3A%2F%2Fgithub.com%2Fvercel%2Fai-chatbot%2Fblob%2Fmain%2F.env.example&demo-title=AI%20Chatbot&demo-description=An%20Open-Source%20AI%20Chatbot%20Template%20Built%20With%20Next.js%20and%20the%20AI%20SDK%20by%20Vercel.&demo-url=https%3A%2F%2Fchat.vercel.ai&stores=[{%22type%22:%22postgres%22},{%22type%22:%22blob%22}])
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FDphenomenal101%2Frag-chatbot)
 
 ## Running locally
 
