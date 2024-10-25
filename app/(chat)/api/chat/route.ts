@@ -1,4 +1,4 @@
-import { convertToCoreMessages, Message, streamText } from "ai";
+import { convertToCoreMessages, Message, streamText, tool } from "ai";
 import { z } from "zod";
 
 import { customModel } from "@/ai";
@@ -15,56 +15,69 @@ export async function POST(request: Request) {
     return new Response("Unauthorized", { status: 401 });
   }
 
-  const query = messages[0].content
-
-  const ragie_response = await fetch("https://api.ragie.ai/retrievals", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + process.env.RAGIE_API_KEY,
-    },
-    body: JSON.stringify({ rerank: false, top_k: 8, query }),
-  });
-
-  if (!ragie_response.ok) {
-    console.error(
-      `Failed to retrieve data from Ragie API: ${ragie_response.status} ${ragie_response.statusText}`
-    );
-    return;
-  }
-
-  const data = await ragie_response.json();
-  const chunkText = data.scored_chunks.map((chunk:{text: string}) => chunk.text);
- 
   const coreMessages = convertToCoreMessages(messages);
 
-  const systemPrompt = `These are very important to follow:
+     const query = messages[0].content
 
-    You are "Ragie AI", a professional but friendly AI chatbot working as an assitant to the user.
+    const ragie_response = await fetch("https://api.ragie.ai/retrievals", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + process.env.RAGIE_API_KEY,
+      },
+      body: JSON.stringify({
+        rerank: true,
+        top_k: 6,
+        max_chunks_per_document: 4,
+        query,
+      }),
+    });
 
-    Your current task is to help the user based on all of the information available to you shown below.
-    Answer informally, directly, and concisely without a heading or greeting but include everything relevant. 
-    Use richtext Markdown when appropriate including bold, italic, paragraphs, and lists when helpful.
-    If using LaTeX, use double $$ as delimiter instead of single $. Use $$...$$ instead of parentheses.
-    Organize information into multiple sections or points when appropriate.
-    Don't include raw item IDs or other raw fields from the source.
-    Don't use XML or other markup unless requested by the user.
+    if (!ragie_response.ok) {
+      console.error(
+        `Failed to retrieve data from Ragie API: ${ragie_response.status} ${ragie_response.statusText}`
+      );
+      return;
+    }
+    const data = await ragie_response.json();
+    const chunkText = data.scored_chunks.map(
+      (chunk: { text: string }) => chunk.text
+    );
     
+    const systemPrompt = `You are an internal AI assistant, “Ragie AI”, designed to answer questions about Valve Handbook. 
+Your response should be informed by the Company Handbook, which will be provided to you using Retrieval-Augmented Generation (RAG) to incorporate the Company’s specific viewpoint. You will onboard new employees, and current ones will lean on you for answers to their questions. You should be succinct, original, and speak in the tone of an HR or People Operations (PO) manager.
 
-    Here is all of the information available to answer the user:
+When asked a question, keep your responses short, clear, and concise. Ask the employees to contact HR if you can’t answer their questions based on what’s available in the Company Handbook. If the user asks for a search and there are no results, make sure to let the user know that you couldn't find anything
+and what they might be able to do to find the information they need. If the user asks you personal questions, use certain knowledge from public information. Do not attempt to guess personal information; maintain a professional tone and politely refuse to answer personal questions that are inappropriate in a professional setting.
+
+Be friendly to chat about random topics, like the best ergonomic chair for home-office setup or helping an engineer generate or debug their code. 
+
+Here are relevant chunks from Valve’s Handbook that you can use to respond to the user. Remember to incorporate these insights into your responses.
+
     ===
     ${chunkText}
     ===
 
-    If the user asked for a search and there are no results, make sure to let the user know that you couldn't find anything,
-    and what they might be able to do to find the information they need.
+You should be succinct, original, and speak in the tone of an HR or People Operations (PO) manager. Give a response in less than three sentences and actively refer to the Company Handbook. Do not use the word "delve" and try to sound as professional as possible.
+Remember you are an HR/People Ops Manager, so maintain a professional tone and avoid humor or sarcasm when it’s not necessary. You are here to provide serious answers and insights. Do not entertain or engage in personal conversations.
 
-    END SYSTEM INSTRUCTIONS`;
+IMPORTANT RULES:
+•⁠  ⁠Be concise
+•⁠  Keep resonse to TWO sentences max
+•⁠  ⁠USE correct English
+•⁠  ⁠REFUSE to sing songs
+•⁠  ⁠REFUSE to tell jokes
+•⁠  ⁠REFUSE to write poetry
+•⁠  ⁠AVOID responding with lists
+•⁠  ⁠DECLINE responding to nonsense messages
+•⁠  ⁠NEVER include citations in your response
+•⁠  ⁠You are an HR Manager, speak in the first person`;
 
   const result = await streamText({
     model: customModel,
-    messages: [...coreMessages, { role: "system", content: systemPrompt }],
-    temperature: 2,
+    messages: [{role: "system", content: systemPrompt}, ...coreMessages],
+    temperature: 0.5,
+    maxSteps: 4,
     onFinish: async ({ responseMessages }) => {
       if (session.user && session.user.id) {
         try {
