@@ -21,14 +21,14 @@ import { Textarea } from "../ui/textarea";
 
 const suggestedActions = [
   {
-    title: "What is the weather",
-    label: "in San Francisco?",
-    action: "What is the weather in San Francisco?",
+    title: "What is our policy",
+    label: "on paid leaves?",
+    action: "What is our policy on paid leaves?",
   },
   {
-    title: "Answer like I'm 5,",
-    label: "why is the sky blue?",
-    action: "Answer like I'm 5, why is the sky blue?",
+    title: "What are the expectations",
+    label: "for work hours?",
+    action: "What are the expectations for work hours?",
   },
 ];
 
