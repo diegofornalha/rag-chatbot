@@ -71,7 +71,7 @@ IMPORTANT RULES:
 •⁠  ⁠AVOID responding with lists
 •⁠  ⁠DECLINE responding to nonsense messages
 •⁠  ⁠NEVER include citations in your response
-•⁠  ⁠NEVER mention "according to our handbook" in your response
+•⁠  ⁠NEVER mention according to our handbook in your response
 •⁠  ⁠You are an HR Manager, speak in the first person;
 
   const result = await streamText({
