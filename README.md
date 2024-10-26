@@ -43,7 +43,7 @@ This template ships with Meta `llama-3.1-70b-versatile` as the default. However,
 
 You can deploy your own version of the Next.js AI Chatbot to Vercel with one click:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FDphenomenal101%2Frag-chatbot)
+[![Deploy with Vercel](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FDphenomenal101%2Frag-chatbot&env=RAGIE_API_KEY,GROQ_API_KEY,POSTGRES_URL,AUTH_SECRET,BLOB_READ_WRITE_TOKEN&project-name=ragie-chatbot&repository-name=ragie-chatbot)
 
 ## Running locally
 

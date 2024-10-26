@@ -1,5 +1,6 @@
-import Link from "next/link";
 import { motion } from "framer-motion";
+import Link from "next/link";
+
 import { VercelIcon, RagieLogo } from "./icons";
 
 export const Overview = () => {
