@@ -9,8 +9,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://chat.vercel.ai"),
-  title: "Ragie Chatbot",
-  description: "Next.js RAG chatbot template using the AI SDK.",
+  title: "Ragie Chatbot Template",
+  description: "RAG chatbot template using Ragie, Vercel, and the Next.js AI SDK.",
 };
 
 export const viewport = {
