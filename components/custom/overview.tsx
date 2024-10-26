@@ -20,7 +20,7 @@ export const Overview = () => {
           <RagieLogo size={20} />
         </div>
         <div>
-          <p>This is an open-source RAG Chatbot template built with Ragie, Next.js, and the AI SDK by Vercel. It uses Groq to help you generate blazingly fast responses from any LLM.</p>
+          <p>This is an open-source RAG Chatbot template built with Ragie and the Next.js AI SDK by Vercel. It uses GPT4-o to help you generate responses from your data source.</p>
           <br />
           <p>
             You can learn more about how to self-host by visiting the{' '}
