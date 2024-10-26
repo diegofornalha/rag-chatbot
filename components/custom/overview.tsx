@@ -1,10 +1,8 @@
+import Link from "next/link";
 import { motion } from "framer-motion";
-import { useSession } from "next-auth/react"
-
-import { GoogleDriveIcon } from "./icons";
+import { VercelIcon, RagieLogo } from "./icons";
 
 export const Overview = () => {
-const { data: session } = useSession();
   return (
     <motion.div
       key="overview"
@@ -14,14 +12,26 @@ const { data: session } = useSession();
       exit={{ opacity: 0, scale: 0.98 }}
       transition={{ delay: 0.5 }}
     >
-      <div className="border rounded-lg p-6 flex flex gap-4 items-center align-center text-zinc-500 text-sm dark:text-zinc-400 dark:border-zinc-700">
-        <div className="p-2 rounded-sm bg-[#000]/10 dark:bg-[#FFF]/10">
-          <GoogleDriveIcon size={24} />
+      <div className="border rounded-lg p-6 text-zinc-500 text-sm dark:text-zinc-400 dark:border-zinc-700">
+        <div className="flex justify-center mb-4 text-zinc-900 dark:text-white">
+          <VercelIcon size={20} />
+          <span className="mx-4">+</span>
+          <RagieLogo size={20} />
         </div>
-
-        <div className="">
-          <p className="font-bold">{session?.user?.email}</p>
-          <p>Your Google Drive is Connected</p>
+        <div>
+          <p>This is an open-source RAG Chatbot template built with Ragie, Next.js, and the AI SDK by Vercel. It uses Groq to help you generate blazingly fast responses from any LLM.</p>
+          <br />
+          <p>
+            You can learn more about how to self-host by visiting the{' '}
+            <Link
+              className="font-medium underline underline-offset-4"
+              href="https://sdk.vercel.ai/docs"
+              target="_blank"
+            >
+              Docs
+            </Link>
+            .
+          </p>
         </div>
       </div>
     </motion.div>
