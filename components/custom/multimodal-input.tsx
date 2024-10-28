@@ -21,9 +21,9 @@ import { Textarea } from "../ui/textarea";
 
 const suggestedActions = [
   {
-    title: "What is our policy",
-    label: "on paid leaves?",
-    action: "What is our policy on paid leaves?",
+    title: "What is our",
+    label: "vacation policy?",
+    action: "What is our vacation policy?",
   },
   {
     title: "What are the expectations",
