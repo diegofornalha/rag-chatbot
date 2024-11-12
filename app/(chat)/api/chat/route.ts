@@ -4,7 +4,6 @@ import { z } from "zod";
 import { customModel } from "@/ai";
 import { auth } from "@/app/(auth)/auth";
 import { deleteChatById, getChatById, saveChat } from "@/db/queries";
-import { Console } from "console";
 
 export async function POST(request: Request) {
   const { id, messages }: { id: string; messages: Array<Message> } =
@@ -44,8 +43,6 @@ export async function POST(request: Request) {
     const chunkText = data.scored_chunks.map(
       (chunk: { text: string }) => chunk.text
     );
-    // Added console message for vercel monitoring
-    console.log("Chunk text from Ragie", chunkText);    
     
     const systemPrompt = `You are an internal AI assistant, “Ragie AI”, designed to answer questions about Working at PostHog. Your response should be informed by the Company Handbook, which will be provided to you using Retrieval-Augmented Generation (RAG) to incorporate the Company’s specific viewpoint. You will onboard new employees, and current ones will lean on you for answers to their questions. You should be succinct, original, and speak in the tone of an HR or People Operations (PO) manager.
 
