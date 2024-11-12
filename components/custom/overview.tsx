@@ -26,7 +26,7 @@ export const Overview = () => {
             You can learn more about how to self-host by visiting the{' '}
             <Link
               className="font-medium underline underline-offset-4"
-              href="https://sdk.vercel.ai/docs"
+              href="https://dphenomenal.com/blog/building-a-rag-chatbot"
               target="_blank"
             >
               Docs
