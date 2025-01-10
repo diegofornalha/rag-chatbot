@@ -1,76 +1,67 @@
 "use client";
 
-import { Attachment, ToolInvocation } from "ai";
-import { motion } from "framer-motion";
-import { ReactNode } from "react";
-
+import { Attachment } from "ai";
 import { BotIcon, UserIcon } from "./icons";
-import { Markdown } from "./markdown";
 import { PreviewAttachment } from "./preview-attachment";
-import { Weather } from "./weather";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
-export const Message = ({
+interface ToolInvocation {
+  toolName: string;
+  toolCallId: string;
+  args?: Record<string, any>;
+  state: "running" | "result" | "partial-call";
+  result?: any;
+}
+
+export function Message({
   role,
   content,
-  toolInvocations,
   attachments,
+  toolInvocations,
 }: {
   role: string;
-  content: string | ReactNode;
-  toolInvocations: Array<ToolInvocation> | undefined;
+  content: string;
   attachments?: Array<Attachment>;
-}) => {
+  toolInvocations?: Array<ToolInvocation>;
+}) {
   return (
-    <motion.div
-      className={`flex flex-row gap-4 px-4 w-full md:w-[500px] md:px-0 first-of-type:pt-20`}
-      initial={{ y: 5, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-    >
-      <div className="size-[24px] flex flex-col justify-center items-center shrink-0 text-zinc-400">
-        {role === "assistant" ? <BotIcon /> : <UserIcon />}
-      </div>
+    <div className={`prose break-words ${role === "user" ? "text-white prose-invert" : ""}`}>
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          pre: ({ node, children, ...props }) => (
+            <div className="relative">
+              <pre {...props}>{children}</pre>
+            </div>
+          ),
+          code: ({ node, children, ...props }) => (
+            <code {...props}>{children}</code>
+          ),
+        }}
+      >
+        {content}
+      </ReactMarkdown>
 
-      <div className="flex flex-col gap-2 w-full">
-        {content && (
-          <div className="text-zinc-800 dark:text-zinc-300 flex flex-col gap-4">
-            <Markdown>{content as string}</Markdown>
-          </div>
-        )}
+      {attachments && attachments.length > 0 && (
+        <div className="flex flex-row gap-2">
+          {attachments.map((attachment) => (
+            <PreviewAttachment key={attachment.url} attachment={attachment} />
+          ))}
+        </div>
+      )}
 
-        {toolInvocations && (
-          <div className="flex flex-col gap-4">
-            {toolInvocations.map((toolInvocation) => {
-              const { toolName, toolCallId, state } = toolInvocation;
-
-              if (state === "result") {
-                const { result } = toolInvocation;
-
-                return (
-                  <div key={toolCallId}>
-                    {toolName === "getWeather" ? (
-                      <Weather weatherAtLocation={result} />
-                    ) : null}
-                  </div>
-                );
-              } else {
-                return (
-                  <div key={toolCallId} className="skeleton">
-                    {toolName === "getWeather" ? <Weather /> : null}
-                  </div>
-                );
-              }
-            })}
-          </div>
-        )}
-
-        {attachments && (
-          <div className="flex flex-row gap-2">
-            {attachments.map((attachment) => (
-              <PreviewAttachment key={attachment.url} attachment={attachment} />
-            ))}
-          </div>
-        )}
-      </div>
-    </motion.div>
+      {toolInvocations && toolInvocations.length > 0 && (
+        <div className="space-y-2">
+          {toolInvocations.map((invocation, index) => (
+            <div key={index}>
+              {invocation.toolName === "getWeather" && invocation.state === "result" && (
+                <div>Weather: {JSON.stringify(invocation.result)}</div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
-};
+}

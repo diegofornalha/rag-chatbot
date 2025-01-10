@@ -1,0 +1,89 @@
+{
+  "empresa": {
+    "nome": "VTX Administradora",
+    "fundacao": "2019",
+    "descricao": "A VTX é uma administradora de condomínios focada em oferecer serviços completos de gestão condominial com transparência, tecnologia e atendimento humanizado.",
+    "missao": "Transformar a gestão de condomínios em uma experiência mais eficiente, acolhedora e de alto padrão"
+  },
+  "servicos": [
+    {
+      "nome": "Gestão Financeira",
+      "descricao": "Controle preciso das finanças, relatórios claros e transparência total",
+      "beneficios": [
+        "Controle de receitas e despesas",
+        "Previsão orçamentária",
+        "Prestação de contas mensal",
+        "Cobrança de inadimplentes"
+      ]
+    },
+    {
+      "nome": "Manutenção e Operações",
+      "descricao": "Cuidamos da manutenção e operação, mantendo tudo em perfeito funcionamento",
+      "beneficios": [
+        "Manutenção preventiva",
+        "Gestão de fornecedores",
+        "Vistorias periódicas",
+        "Plano de manutenção"
+      ]
+    },
+    {
+      "nome": "Consultoria Especializada",
+      "descricao": "Estratégias personalizadas para as necessidades de cada empreendimento",
+      "beneficios": [
+        "Assessoria jurídica",
+        "Planejamento estratégico",
+        "Gestão de seguros",
+        "Consultoria em melhorias"
+      ]
+    },
+    {
+      "nome": "Atendimento ao Morador",
+      "descricao": "Equipe preparada para atender com rapidez e simpatia",
+      "beneficios": [
+        "Suporte 24/7",
+        "Canal direto com síndico",
+        "Resolução de conflitos",
+        "App para moradores"
+      ]
+    }
+  ],
+  "diferenciais": [
+    {
+      "titulo": "Gestão Completa e Transparente",
+      "descricao": "De finanças à manutenção, nosso serviço é feito para garantir eficiência e controle absoluto"
+    },
+    {
+      "titulo": "Suporte Humanizado",
+      "descricao": "Atendimento personalizado e ágil, com foco em soluções práticas e acolhedoras"
+    },
+    {
+      "titulo": "Tecnologia e Praticidade",
+      "descricao": "Facilitamos a comunicação e o acompanhamento dos serviços com recursos modernos e acessíveis"
+    },
+    {
+      "titulo": "Valorização do Patrimônio",
+      "descricao": "Administração que não apenas cuida, mas valoriza o seu condomínio"
+    }
+  ],
+  "processo": {
+    "etapas": [
+      {
+        "nome": "Avaliação Completa",
+        "descricao": "Estudo das necessidades específicas do condomínio e proposta personalizada"
+      },
+      {
+        "nome": "Planejamento Estratégico",
+        "descricao": "Definimos um plano de ação que envolve desde os detalhes financeiros até a manutenção"
+      },
+      {
+        "nome": "Implementação e Suporte",
+        "descricao": "Nossa equipe cuida de cada detalhe, garantindo um condomínio organizado e valorizado"
+      }
+    ]
+  },
+  "contato": {
+    "whatsapp": "5519998266719",
+    "email": "contato@vtxadm.com.br",
+    "site": "www.vtxadm.com.br"
+  }
+}

@@ -1,36 +1,53 @@
-import { CoreMessage } from "ai";
 import { notFound } from "next/navigation";
-
-import { auth } from "@/app/(auth)/auth";
-import { Chat as PreviewChat } from "@/components/custom/chat";
 import { getChatById } from "@/db/queries";
-import { Chat } from "@/db/schema";
-import { convertToUIMessages, generateUUID } from "@/lib/utils";
+import { Chat } from "@/components/custom/chat";
 
-export default async function Page(props: { params: Promise<any> }) {
-  const params = await props.params;
-  const { id } = params;
-  const chatFromDb = await getChatById({ id });
-
-  if (!chatFromDb) {
-    notFound();
-  }
-
-  // type casting
-  const chat: Chat = {
-    ...chatFromDb,
-    messages: convertToUIMessages(chatFromDb.messages as Array<CoreMessage>),
+interface PageProps {
+  params: {
+    id: string;
   };
+}
 
-  const session = await auth();
-
-  if (!session || !session.user) {
+export default async function Page({ params }: PageProps) {
+  // Verificar se params e params.id existem antes de prosseguir
+  if (!params || !params.id) {
     return notFound();
   }
 
-  if (session.user.id !== chat.userId) {
+  const chatId = params.id;
+
+  // Validar o ID
+  if (typeof chatId !== 'string' || chatId.length < 1) {
     return notFound();
   }
 
-  return <PreviewChat id={chat.id} initialMessages={chat.messages} />;
+  let initialMessages = [];
+
+  try {
+    // Buscar chat do banco de dados usando o chatId
+    const chat = await getChatById({ id: chatId });
+
+    if (chat?.messages) {
+      try {
+        const parsedMessages = JSON.parse(chat.messages);
+        if (Array.isArray(parsedMessages)) {
+          initialMessages = parsedMessages;
+        }
+      } catch (error) {
+        console.error("Erro ao processar mensagens:", error);
+      }
+    }
+  } catch (error) {
+    console.error("Erro ao buscar chat:", error);
+    return notFound();
+  }
+
+  // Renderizar o componente Chat passando o chatId como prop
+  return (
+    <div className="flex min-h-screen flex-col">
+      <main className="flex flex-1 flex-col">
+        <Chat id={chatId} initialMessages={initialMessages} />
+      </main>
+    </div>
+  );
 }

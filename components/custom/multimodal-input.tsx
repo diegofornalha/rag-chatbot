@@ -1,7 +1,6 @@
 "use client";
 
 import { Attachment, ChatRequestOptions, CreateMessage, Message } from "ai";
-import { motion } from "framer-motion";
 import React, {
   useRef,
   useEffect,
@@ -19,19 +18,6 @@ import useWindowSize from "./use-window-size";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
 
-const suggestedActions = [
-  {
-    title: "What is our",
-    label: "vacation policy?",
-    action: "What is our vacation policy?",
-  },
-  {
-    title: "What are the expectations",
-    label: "for work hours?",
-    action: "What are the expectations for work hours?",
-  },
-];
-
 export function MultimodalInput({
   input,
   setInput,
@@ -39,7 +25,7 @@ export function MultimodalInput({
   stop,
   attachments,
   setAttachments,
-  messages,
+  messages = [],
   append,
   handleSubmit,
 }: {
@@ -49,7 +35,7 @@ export function MultimodalInput({
   stop: () => void;
   attachments: Array<Attachment>;
   setAttachments: Dispatch<SetStateAction<Array<Attachment>>>;
-  messages: Array<Message>;
+  messages?: Array<Message>;
   append: (
     message: Message | CreateMessage,
     chatRequestOptions?: ChatRequestOptions,
@@ -121,7 +107,7 @@ export function MultimodalInput({
         toast.error(error);
       }
     } catch (error) {
-      toast.error("Failed to upload file, please try again!");
+      toast.error("Falha ao enviar arquivo, por favor tente novamente!");
     }
   };
 
@@ -152,38 +138,58 @@ export function MultimodalInput({
   );
 
   return (
-    <div className="relative w-full flex flex-col gap-4">
-      {messages.length === 0 &&
-        attachments.length === 0 &&
-        uploadQueue.length === 0 && (
-          <div className="grid sm:grid-cols-2 gap-2 w-full md:px-0 mx-auto md:max-w-[500px]">
-            {suggestedActions.map((suggestedAction, index) => (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 20 }}
-                transition={{ delay: 0.05 * index }}
-                key={index}
-                className={index > 1 ? "hidden sm:block" : "block"}
-              >
-                <button
-                  onClick={async () => {
-                    append({
-                      role: "user",
-                      content: suggestedAction.action,
-                    });
-                  }}
-                  className="w-full text-left border border-zinc-200 dark:border-zinc-800 text-zinc-800 dark:text-zinc-300 rounded-lg p-2 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors flex flex-col"
-                >
-                  <span className="font-medium">{suggestedAction.title}</span>
-                  <span className="text-zinc-500 dark:text-zinc-400">
-                    {suggestedAction.label}
-                  </span>
-                </button>
-              </motion.div>
-            ))}
+    <div className="relative w-full flex flex-col gap-2">
+      <div className="flex items-center gap-2 p-2 bg-white rounded-lg border">
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-gray-500">Groq</span>
+            <span className="text-sm text-gray-300">|</span>
+            <button className="text-sm text-gray-500 hover:text-gray-700">⌘P</button>
           </div>
+          <Textarea
+            ref={textareaRef}
+            placeholder="Envie uma mensagem..."
+            value={input}
+            onChange={handleInput}
+            className="min-h-[72px] overflow-hidden resize-none border-0 p-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+            rows={3}
+            onKeyDown={(event) => {
+              if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+
+                if (isLoading) {
+                  toast.error("Por favor, aguarde o modelo terminar sua resposta!");
+                } else {
+                  submitForm();
+                }
+              }
+            }}
+          />
+        </div>
+
+        {isLoading ? (
+          <Button
+            className="rounded-full p-2 h-fit"
+            onClick={(event) => {
+              event.preventDefault();
+              stop();
+            }}
+          >
+            <StopIcon size={14} />
+          </Button>
+        ) : (
+          <Button
+            className="rounded-full p-2 h-fit"
+            onClick={(event) => {
+              event.preventDefault();
+              submitForm();
+            }}
+            disabled={input.length === 0 || uploadQueue.length > 0}
+          >
+            <ArrowUpIcon size={14} />
+          </Button>
         )}
+      </div>
 
       <input
         type="file"
@@ -212,49 +218,6 @@ export function MultimodalInput({
             />
           ))}
         </div>
-      )}
-
-      <Textarea
-        ref={textareaRef}
-        placeholder="Send a message..."
-        value={input}
-        onChange={handleInput}
-        className="min-h-[24px] overflow-hidden resize-none rounded-lg text-base bg-muted"
-        rows={3}
-        onKeyDown={(event) => {
-          if (event.key === "Enter" && !event.shiftKey) {
-            event.preventDefault();
-
-            if (isLoading) {
-              toast.error("Please wait for the model to finish its response!");
-            } else {
-              submitForm();
-            }
-          }
-        }}
-      />
-
-      {isLoading ? (
-        <Button
-          className="rounded-full p-1.5 h-fit absolute bottom-2 right-2 m-0.5"
-          onClick={(event) => {
-            event.preventDefault();
-            stop();
-          }}
-        >
-          <StopIcon size={14} />
-        </Button>
-      ) : (
-        <Button
-          className="rounded-full p-1.5 h-fit absolute bottom-2 right-2 m-0.5"
-          onClick={(event) => {
-            event.preventDefault();
-            submitForm();
-          }}
-          disabled={input.length === 0 || uploadQueue.length > 0}
-        >
-          <ArrowUpIcon size={14} />
-        </Button>
       )}
     </div>
   );

@@ -1,7 +1,12 @@
+import { nanoid } from "ai";
 import { Chat } from "@/components/custom/chat";
-import { generateUUID } from "@/lib/utils";
+import { Message } from "ai";
 
-export default async function Page() {
-  const id = generateUUID();
-  return <Chat key={id} id={id} initialMessages={[]} />;
+export const runtime = "edge";
+
+export default function IndexPage() {
+  const id = nanoid();
+  const initialMessages: Message[] = [];
+
+  return <Chat id={id} initialMessages={initialMessages} />;
 }
