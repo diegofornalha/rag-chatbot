@@ -19,7 +19,8 @@ export function useCustomChat({ initialMessages = [], id }: UseCustomChatProps =
     handleSubmit: chatSubmit,
     setInput,
     isLoading,
-    stop
+    stop,
+    setMessages
   } = useChat({
     initialMessages,
     id
@@ -55,6 +56,7 @@ export function useCustomChat({ initialMessages = [], id }: UseCustomChatProps =
     handleSubmit,
     setInput,
     isLoading,
-    stop
+    stop,
+    setMessages
   };
 } 

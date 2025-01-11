@@ -20,7 +20,8 @@ export function Chat({ id, initialMessages = [] }: ChatProps) {
     handleSubmit,
     setInput,
     isLoading,
-    stop
+    stop,
+    setMessages
   } = useCustomChat();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -53,6 +54,8 @@ export function Chat({ id, initialMessages = [] }: ChatProps) {
         setInput={setInput}
         handleSubmit={handleSubmit}
         isLoading={isLoading}
+        messages={messages}
+        setMessages={setMessages}
       />
     </div>
   );

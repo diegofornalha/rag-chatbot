@@ -25,22 +25,48 @@ async function getContextFromRagie(query: string) {
   }
 }
 
-export async function POST(req: Request) {
-  interface RequestData {
-    messages: any[];
-    data?: {
-      model?: string;
-      geminiKey?: string;
-      groqKey?: string;
-    };
-  }
+interface RequestData {
+  messages: any[];
+  data?: {
+    model?: string;
+    geminiKey?: string;
+    groqKey?: string;
+  };
+  documentId?: string;
+}
 
-  let requestData: RequestData = { messages: [] };
+export async function POST(req: Request) {
   try {
-    // Extrai os dados da requisição
-    requestData = await req.json();
-    const { messages, data } = requestData;
-    const { model = 'groq', geminiKey, groqKey } = data || {};
+    const requestData: RequestData = await req.json();
+    const { messages, data, documentId } = requestData;
+    const lastMessage = messages[messages.length - 1];
+
+    // Busca contexto relevante da Ragie API
+    const context = await fetch("https://api.ragie.ai/retrievals", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${process.env.RAGIE_API_KEY}`
+      },
+      body: JSON.stringify({
+        query: lastMessage.content,
+        rerank: true,
+        filter: documentId ? { document_id: documentId } : undefined
+      })
+    }).then(res => res.json())
+    .then(data => data.scored_chunks || [])
+    .catch(error => {
+      console.error("Falha ao buscar dados da API Ragie:", error);
+      return [];
+    });
+
+    // Formata o contexto para o prompt
+    const contextText = context.length > 0
+      ? "\n\nContexto relevante:\n" + context.map((chunk: any) => chunk.text).join("\n")
+      : "";
+
+    // Prepara o prompt com o contexto
+    const prompt = `${SYSTEM_PROMPT}${contextText}\n\nUsuário: ${lastMessage.content}\n\nAssistente:`;
 
     // Obtém o último input do usuário
     const lastUserMessage = messages.findLast((m: any) => m.role === "user");
@@ -49,42 +75,32 @@ export async function POST(req: Request) {
     }
 
     // Valida as chaves de API
-    if (model === 'gemini' && (!geminiKey || geminiKey.length < 10)) {
+    if (data?.model === 'gemini' && (!data?.geminiKey || data?.geminiKey.length < 10)) {
       throw new Error("Chave API Gemini inválida ou não fornecida");
     }
-    if (model === 'groq' && (!groqKey || !groqKey.startsWith('gsk_'))) {
+    if (data?.model === 'groq' && (!data?.groqKey || !data?.groqKey.startsWith('gsk_'))) {
       throw new Error("Chave API Groq inválida ou não fornecida");
     }
-
-    // Busca contexto da Ragie API
-    const contextChunks = await getContextFromRagie(lastUserMessage.content);
-    const context = contextChunks.map((chunk: any) => chunk.content).join("\n");
-
-    // Cria a mensagem do sistema com o contexto
-    const systemMessage = {
-      role: "system",
-      content: `${SYSTEM_PROMPT}\n\nContexto relevante:\n${context}`,
-    };
-
-    // Prepara as mensagens para o modelo
-    const allMessages = [systemMessage, ...messages];
 
     // Seleciona o modelo apropriado
     let selectedModel;
     try {
-      if (model === 'gemini') {
-        if (!geminiKey) throw new Error("Chave API Gemini não fornecida");
-        selectedModel = createGeminiModel(geminiKey);
+      if (data?.model === 'gemini') {
+        if (!data?.geminiKey) throw new Error("Chave API Gemini não fornecida");
+        selectedModel = createGeminiModel(data?.geminiKey);
       } else {
-        if (!groqKey) throw new Error("Chave API Groq não fornecida");
-        selectedModel = createGroqModel(groqKey);
+        if (!data?.groqKey) throw new Error("Chave API Groq não fornecida");
+        selectedModel = createGroqModel(data?.groqKey);
       }
     } catch (error: any) {
-      throw new Error(`Erro ao inicializar modelo ${model}: ${error.message}`);
+      throw new Error(`Erro ao inicializar modelo ${data?.model}: ${error.message}`);
     }
 
     // Gera a resposta
-    const response = await selectedModel.invoke(allMessages);
+    const response = await selectedModel.invoke([{
+      role: "system",
+      content: prompt
+    }, ...messages]);
 
     // Garante que a resposta é um ReadableStream
     if (response && response instanceof ReadableStream) {
@@ -99,18 +115,12 @@ export async function POST(req: Request) {
       throw new Error("Resposta inválida do modelo");
     }
 
-  } catch (error: any) {
+  } catch (error) {
     console.error("Erro na rota de chat:", error);
-    return new Response(
-      JSON.stringify({ 
-        error: error.message || "Erro ao processar mensagem",
-        model: requestData?.data?.model || 'groq'
-      }),
-      { 
-        status: error.message?.includes("API") ? 401 : 500,
-        headers: { 'Content-Type': 'application/json' }
-      }
-    );
+    return new Response(JSON.stringify({ error: "Erro interno do servidor" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 }
 
