@@ -26,8 +26,18 @@ async function getContextFromRagie(query: string) {
 }
 
 export async function POST(req: Request) {
-  let requestData;
+  interface RequestData {
+    messages: any[];
+    data?: {
+      model?: string;
+      geminiKey?: string;
+      groqKey?: string;
+    };
+  }
+
+  let requestData: RequestData = { messages: [] };
   try {
+    // Extrai os dados da requisição
     requestData = await req.json();
     const { messages, data } = requestData;
     const { model = 'groq', geminiKey, groqKey } = data || {};
@@ -63,8 +73,10 @@ export async function POST(req: Request) {
     let selectedModel;
     try {
       if (model === 'gemini') {
+        if (!geminiKey) throw new Error("Chave API Gemini não fornecida");
         selectedModel = createGeminiModel(geminiKey);
       } else {
+        if (!groqKey) throw new Error("Chave API Groq não fornecida");
         selectedModel = createGroqModel(groqKey);
       }
     } catch (error: any) {

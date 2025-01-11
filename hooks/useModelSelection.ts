@@ -5,8 +5,9 @@ import { toast } from "sonner";
 
 export type ModelType = 'groq' | 'gemini';
 
-const GEMINI_API_KEY = 'AIzaSyCDaK960WJ3_rWHTN2SzLaSKz20oekflCE';
-const GROQ_API_KEY = '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';
+// Lê as chaves de API das variáveis de ambiente
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
+const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
 
 export function useModelSelection() {
   const [selectedModel, setSelectedModel] = useState<ModelType>('groq');
