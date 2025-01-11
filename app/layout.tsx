@@ -6,8 +6,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Assistente VTX",
-  description: "Chatbot da VTX Administradora",
+  title: "Assistente ",
+  description: "Chatbot",
   viewport: {
     width: "device-width",
     initialScale: 1,

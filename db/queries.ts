@@ -1,8 +1,14 @@
-"server-only";
+import { PrismaClient, Prisma } from '@prisma/client';
 
-import { PrismaClient } from "@prisma/client";
+declare global {
+  var prisma: PrismaClient | undefined;
+}
 
-const prisma = new PrismaClient();
+const prisma = global.prisma || new PrismaClient();
+
+if (process.env.NODE_ENV !== 'production') {
+  global.prisma = prisma;
+}
 
 export async function saveChat({
   id,
@@ -16,11 +22,13 @@ export async function saveChat({
       where: { id },
     });
 
+    const messagesJson = messages as Prisma.InputJsonValue[];
+
     if (chat) {
       return await prisma.chat.update({
         where: { id },
         data: {
-          messages: JSON.stringify(messages),
+          messages: messagesJson,
         },
       });
     }
@@ -28,7 +36,7 @@ export async function saveChat({
     return await prisma.chat.create({
       data: {
         id,
-        messages: JSON.stringify(messages),
+        messages: messagesJson,
       },
     });
   } catch (error) {

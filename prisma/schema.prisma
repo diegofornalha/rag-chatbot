@@ -3,15 +3,14 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Chat {
-  id        String    @id @default(uuid())
-  createdAt DateTime  @default(now())
-  messages  Json      @map("messages")
-
-  @@map("chats")
+  id        String   @id @default(uuid())
+  title     String?
+  createdAt DateTime @default(now())
+  messages  Json[]
+  userId    String?
 } 
