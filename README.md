@@ -3,9 +3,8 @@
   <h1 align="center">RAG Chatbot</h1>
 </a>
 
-
 <p align="center">
-  An Open-Source RAG Chatbot Template Built With Ragie, Next.js, and the AI SDK by Vercel.
+  Um Template Open-Source de Chatbot RAG Construído Com Ragie, Next.js e o SDK de IA da Vercel.
 </p>
 
 <p align="center">
@@ -17,8 +16,9 @@
 <br/>
 
 ## Features
+
 - [Ragie.ai](https://ragie.ai/?utm_source=rag-chatbot)
-  - Fully Managed RAG-as-a-service Platform for Developers 
+  - Fully Managed RAG-as-a-service Platform for Developers
 - [Next.js](https://nextjs.org) App Router
   - Advanced routing for seamless navigation and performance
   - React Server Components (RSCs) and Server Actions for server-side rendering and increased performance
