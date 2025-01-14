@@ -1,9 +1,15 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { NextConfig } from "next";
+
+const config: NextConfig = {
   reactStrictMode: true,
   experimental: {
-    serverActions: true,
+    serverActions: {
+      bodySizeLimit: "2mb"
+    }
   },
-}
+  env: {
+    ["NEXT_PUBLIC_RAGIE_API_KEY"]: process.env["NEXT_PUBLIC_RAGIE_API_KEY"],
+  },
+};
 
-module.exports = nextConfig
+export default config;
